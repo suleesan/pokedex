@@ -4,7 +4,9 @@ import './pokedex.css';
 const Pokedex = () => {
   const [pokedex, setPokedex] = useState({});
   const [selectedPokemon, setSelectedPokemon] = useState(1);
-  const [isLoading, setIsLoading] = useState(true); // Add a loading state
+  const [isLoading, setIsLoading] = useState(true); 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchError, setSearchError] = useState(null);
 
   useEffect(() => {
     const fetchPokemon = async () => {
@@ -49,14 +51,62 @@ const Pokedex = () => {
     setSelectedPokemon(id);
   };
 
+  const handleSearch = () => {
+    setSearchError(null);
+  
+    if (!searchQuery) {
+      alert("Please enter a Pokémon name.");
+      return;
+    }
+  
+    const lowercaseQuery = searchQuery.toLowerCase();
+  
+    for (const id in pokedex) {
+      if (pokedex[id].name.toLowerCase() === lowercaseQuery) {
+        setSelectedPokemon(parseInt(id));
+        // Scroll to the selected Pokemon
+        const selectedPokemonElement = document.getElementById(id);
+        if (selectedPokemonElement) {
+          const container = document.getElementById("pokemon-list");
+          container.scrollTop = selectedPokemonElement.offsetTop -200;
+        }
+        return; // Exit the loop once a match is found
+      }
+    }
+  
+    alert("Pokemon not found.")
+  };
+  
   return (
     <div id="container">
-      {isLoading ? ( // Show loading indicator while data is being fetched
+      {isLoading ? ( 
         <>
-          <div id="pokeball" class="pokeball"></div>
+        <div id="loading-container">
+          <div className="pokeball"></div>
+          <h3>Note: This may take a while to load.</h3>
+        </div>
         </>
       ) : (
         <>
+          <div id="header">
+            <h1 id="title">Susan's Pokedex</h1>
+            <h4>Generations I-IV</h4>
+          </div>
+          <div id="search-box">
+            <input
+            type="text"
+            placeholder="Search Pokémon by name"
+            value={searchQuery}
+            id="input-form"
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSearch();
+              }
+            }}
+            />
+            <button id="search-button" onClick={handleSearch}>Search</button>
+          </div>
           <div id="content-box">
             <div id="pokemon-info">
               <img id="pokemon-img" src={pokedex[selectedPokemon]?.img} alt="Pokemon" />
@@ -74,7 +124,7 @@ const Pokedex = () => {
                 <div
                   key={id}
                   id={id}
-                  className={`pokemon-name ${selectedPokemon === parseInt(id) ? 'active' : ''}`}
+                  className={`pokemon-name ${selectedPokemon === id ? 'active' : ''}`}
                   onClick={() => updatePokemon(id)}
                 >
                   {`${id}. ${pokedex[id]?.name.toUpperCase()}`}
@@ -89,5 +139,3 @@ const Pokedex = () => {
 }
 
 export default Pokedex;
-
-
