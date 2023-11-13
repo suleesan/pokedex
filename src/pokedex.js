@@ -22,7 +22,7 @@ const Pokedex = () => {
 
         // if cached data not found, fetch from API
         const promises = [];
-        const numPokemon = 493;
+        const numPokemon = 50;
         for (let i = 1; i <= numPokemon; i++) {
           const url = `https://pokeapi.co/api/v2/pokemon/${i}`;
           promises.push(fetch(url));
@@ -93,31 +93,36 @@ const Pokedex = () => {
           <div id="loading-container">
             <div className="pokeball"></div>
             <h3>Loading...</h3>
+            <h3>(This may take a while to load)</h3>
           </div>
         </>
       ) : (
         <div id="container">
-          <div id="header">
-            <h1 id="title">Susan's Pokedex</h1>
-            <h4>Generations I-IV</h4>
+          <div id="top-navigation">
+            <div id="header">
+              <h1 id="title">Susan's Pokedex</h1>
+              <h4>First 50 Pokemon</h4>
+              <p>More Pokemon to be added!</p>
+            </div>
+            <div id="search-box">
+              <input
+                type="text"
+                placeholder="Search Pokémon by name"
+                value={searchQuery}
+                id="input-form"
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleSearch();
+                  }
+                }}
+              />
+              <button id="search-button" onClick={handleSearch}>
+                Search
+              </button>
+            </div>
           </div>
-          <div id="search-box">
-            <input
-              type="text"
-              placeholder="Search Pokémon by name"
-              value={searchQuery}
-              id="input-form"
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleSearch();
-                }
-              }}
-            />
-            <button id="search-button" onClick={handleSearch}>
-              Search
-            </button>
-          </div>
+         
           <div id="content-box">
             <div id="pokemon-info">
               <img
@@ -125,6 +130,9 @@ const Pokedex = () => {
                 src={pokedex[selectedPokemon]?.img}
                 alt="Pokemon"
               />
+              <div id="pokemon-name">
+                {pokedex[selectedPokemon]?.name.toUpperCase()}
+              </div>
               <div id="pokemon-types">
                 {pokedex[selectedPokemon]?.types?.map((type, index) => (
                   <span key={index} className={`type-box ${type.type.name}`}>
