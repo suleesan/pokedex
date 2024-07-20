@@ -122,9 +122,23 @@ const Pokedex = () => {
               </button>
             </div>
           </div>
-         
-          <div id="content-box">
-            <div id="pokemon-info">
+
+          <div id="content">
+            <div id="list">
+              {Object.keys(pokedex).map((id) => (
+                <div
+                  key={id}
+                  id={id}
+                  className={`pokemon-name ${
+                    selectedPokemon === id ? "active" : ""
+                  }`}
+                  onClick={() => handlePokemonClick(id)}
+                >
+                  {`${id}. ${pokedex[id]?.name.toUpperCase()}`}
+                </div>
+              ))}
+            </div>
+            <div id="info">
               <img
                 id="pokemon-img"
                 src={pokedex[selectedPokemon]?.img}
@@ -143,20 +157,6 @@ const Pokedex = () => {
               <div id="pokemon-description">
                 {pokedex[selectedPokemon]?.desc}
               </div>
-            </div>
-            <div id="pokemon-list">
-              {Object.keys(pokedex).map((id) => (
-                <div
-                  key={id}
-                  id={id}
-                  className={`pokemon-name ${
-                    selectedPokemon === id ? "active" : ""
-                  }`}
-                  onClick={() => handlePokemonClick(id)}
-                >
-                  {`${id}. ${pokedex[id]?.name.toUpperCase()}`}
-                </div>
-              ))}
             </div>
           </div>
         </div>

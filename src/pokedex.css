@@ -1,6 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
 body {
   background-size: cover;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Poppins';
   background-color: #f0f0f0
 }
 
@@ -14,6 +16,7 @@ body {
 #loading-container {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     text-align: center;
 }
@@ -34,7 +37,7 @@ h4 {
   margin: 0;
 }
 
-#content-box {
+#content {
   width: 600px;
   height: 600px;
   border: 10px solid #222224;
@@ -70,12 +73,12 @@ h4 {
   background-color:rgb(189, 184, 184)
 }
 
-#pokemon-info {
+#info {
   flex-grow: 1;
   text-align: center;
 }
 
-#pokemon-list {
+#list {
   flex-grow: 1;
   font-size: 18px;
   overflow-y: auto;
@@ -94,7 +97,7 @@ h4 {
   cursor: pointer;
 }
 
-#pokemon-info img {
+#info img {
   width: 160px;
   height: 160px;
   border: 1px solid black;
@@ -146,7 +149,7 @@ h4 {
 }
 
 .fighting {
-  background-color: darkred;
+  background-color: brown;
   color: white;
 }
 
