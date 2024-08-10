@@ -77,8 +77,8 @@ const Pokedex = () => {
         // Scroll to the selected Pokemon
         const selectedPokemonElement = document.getElementById(id);
         if (selectedPokemonElement) {
-          const container = document.getElementById("pokemon-list");
-          container.scrollTop = selectedPokemonElement.offsetTop - 200;
+          const container = document.getElementById("list");
+          container.scrollTop = selectedPokemonElement.offsetTop - 275;
         }
         return;
       }
@@ -139,20 +139,27 @@ const Pokedex = () => {
               ))}
             </div>
             <div id="info">
-              <img
-                id="pokemon-img"
-                src={pokedex[selectedPokemon]?.img}
-                alt="Pokemon"
-              />
-              <div id="pokemon-name">
-                {pokedex[selectedPokemon]?.name.toUpperCase()}
-              </div>
-              <div id="pokemon-types">
-                {pokedex[selectedPokemon]?.types?.map((type, index) => (
-                  <span key={index} className={`type-box ${type.type.name}`}>
-                    {type.type.name.toUpperCase()}
-                  </span>
-                ))}
+              <div id="pokemon-box">
+                <img
+                  id="pokemon-img"
+                  src={pokedex[selectedPokemon]?.img}
+                  alt="Pokemon"
+                />
+                <div id="pokemon-innerbox">
+                  <div id="pokemon-name">
+                    {pokedex[selectedPokemon]?.name.toUpperCase()}
+                  </div>
+                  <div id="pokemon-types">
+                    {pokedex[selectedPokemon]?.types?.map((type, index) => (
+                      <span
+                        key={index}
+                        className={`type-box ${type.type.name}`}
+                      >
+                        {type.type.name.toUpperCase()}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </div>
               <div id="pokemon-description">
                 {pokedex[selectedPokemon]?.desc}

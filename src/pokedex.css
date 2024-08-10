@@ -39,7 +39,7 @@ h4 {
 
 #content {
   width: 600px;
-  height: 600px;
+  height: 450px;
   border: 10px solid #222224;
   border-radius: 10px;
   display: flex;
@@ -47,6 +47,8 @@ h4 {
   margin-top: 10px;
   background-size: cover;
   background-color: #f00000;
+  padding: 20px;
+  border-radius: 10px; 
 }
 
 #search-box {
@@ -74,36 +76,48 @@ h4 {
 }
 
 #info {
-  flex-grow: 1;
+  flex: 2;
   text-align: center;
+  border-radius: 10px;
+  margin-left: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
 
 #list {
-  flex-grow: 1;
+  flex: 1;
   font-size: 18px;
   overflow-y: auto;
+  background-color: white;
+  border-radius: 10px;
+  max-height: 450px;
+  border: solid #222224;
 }
 
 .pokemon-name {
-  border: 1px solid black;
-  border-radius: 10px;
-  background-color: white;
   margin: 5px;
   padding: 5px;
 }
 
 .pokemon-name:hover {
   background-color: #e4e3e3;
+  border-radius: 5px;
   cursor: pointer;
+}
+
+.pokemon-name:active {
+  background-color: #e4e3e3;
+  border-radius: 5px;
 }
 
 #info img {
   width: 160px;
   height: 160px;
-  border: 1px solid black;
-  border-radius: 10px;
   margin-top: 20px;
-  background-color: white;
 }
 
 #pokemon-types {
@@ -208,25 +222,39 @@ h4 {
   color: white;
 }
 #pokemon-name {
-  border: 1px solid black;
-  border-radius: 10px;
-  background-color: white;
   margin: 5px;
   padding: 5px;
 }
 
-#pokemon-description {
-  width: 230px;
-  height: 200px;
-  background-color: white;
-  border: 1px solid black;
+#pokemon-box {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border: solid #222224;
   border-radius: 10px;
+  background-color: white;
+  width: 350px;
+}
 
+#pokemon-description {
+  border: solid #222224;
+  border-radius: 10px;
   margin: 0 auto;
   margin-top: 10px;
   padding: 2px;
   font-size: 18px;
   overflow-y: auto;
+  background-color: white;
+  height: 200px;
+}
+
+#pokemon-innerbox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-right: 5px;
 }
 
 .pokeball {
