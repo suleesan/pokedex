@@ -14,11 +14,11 @@ body {
 }
 
 #loading-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 #header {
@@ -38,7 +38,7 @@ h4 {
 }
 
 #content {
-  width: 600px;
+  max-width: 600px;
   height: 450px;
   border: 10px solid #222224;
   border-radius: 10px;
@@ -47,8 +47,9 @@ h4 {
   margin-top: 10px;
   background-size: cover;
   background-color: #f00000;
-  padding: 20px;
+  padding: 30px;
   border-radius: 10px; 
+  gap: 30px;
 }
 
 #search-box {
@@ -62,6 +63,7 @@ h4 {
   width: 15em;
   border-radius: 10px;
   margin-right: 1em;
+  padding-left: 6px;
 }
 
 #search-button {
@@ -78,14 +80,17 @@ h4 {
 #info {
   flex: 2;
   text-align: center;
-  border-radius: 10px;
-  margin-left: 10px;
-  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 10px;
+  height: 100%;
+  position: relative; 
+  height: 450px; 
+  width: 400px; 
+  position: relative; 
+  overflow: hidden;
 }
 
 #list {
@@ -235,6 +240,7 @@ h4 {
   border: solid #222224;
   border-radius: 10px;
   background-color: white;
+  height: 160px;
   width: 350px;
 }
 
@@ -243,11 +249,12 @@ h4 {
   border-radius: 10px;
   margin: 0 auto;
   margin-top: 10px;
-  padding: 2px;
+  padding: 10px;
   font-size: 18px;
   overflow-y: auto;
   background-color: white;
   height: 200px;
+  width: 350px;
 }
 
 #pokemon-innerbox {
@@ -256,55 +263,4 @@ h4 {
   justify-content: center;
   align-items: center;
   margin-right: 5px;
-}
-
-.pokeball {
-  height: 250px;
-  width: 250px;
-  border: 13px solid #222224;
-  border-radius: 50%;
-  background-image: linear-gradient(
-    #f00000 50%,
-    #f0f0f0 50%
-  );
-  position: absolute;
-  top: 50%; 
-  left: 50%; 
-  transform: translate(-50%, -50%);
-  animation: load 2s infinite;
-}
-
-@keyframes load {
-  0%, 100% {
-    transform: translate(-50%, -50%) scale(1); 
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(0.7); 
-  }
-}
-
-.pokeball:before {
-  position: absolute;
-  content: "";
-  height: 25px;
-  width: 250px;
-  background-color: #222224;
-  top: 112.5px;
-  left: 0px;
-}
-
-.pokeball:after {
-  position: absolute;
-  content: "";
-  height: 90px;
-  width: 90px;
-  background-image: radial-gradient(
-    #ffffff 0px, #ffffff 10px,
-    #222224 10px, #222224 15px,
-    #ffffff 15px, #ffffff 32px,
-    #222224 32px
-  );
-  border-radius: 50%;
-  top: 80px;
-  left: 80px;
 }

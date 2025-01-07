@@ -1,66 +1,60 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./pokedex.css";
-import { setPokedex, setSelectedPokemon } from "./actions";
+import { setSelectedPokemon, setPokemonDetails } from "./actions";
+import { pokemonDictionary } from "./dictionary";
 
 const Pokedex = () => {
-  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const pokedex = useSelector((state) => state.pokedex);
-  let selectedPokemon = useSelector((state) => state.selectedPokemon) || 1;
   const dispatch = useDispatch();
+  const pokedexData = useSelector((state) => state.pokedexData);
+  const selectedPokemon = useSelector((state) => state.selectedPokemon) || 1;
 
+  const pokemonList = Object.keys(pokemonDictionary).map((name) => ({
+    name,
+    id: pokemonDictionary[name],
+  }));
+
+  // fetch bulbasaur upon first load
   useEffect(() => {
-    const fetchPokemon = async () => {
-      try {
-        const cachedData = localStorage.getItem("pokedexData");
-        if (cachedData) {
-          dispatch(setPokedex(JSON.parse(cachedData)));
-          setIsLoading(false);
-          return;
-        }
+    const bulbasaurId = pokemonDictionary["bulbasaur"];
 
-        // if cached data not found, fetch from API
-        const promises = [];
-        const numPokemon = 50;
-        for (let i = 1; i <= numPokemon; i++) {
-          const url = `https://pokeapi.co/api/v2/pokemon/${i}`;
-          promises.push(fetch(url));
-        }
-        const responses = await Promise.all(promises);
+    if (!pokedexData[bulbasaurId]) {
+      fetchPokemonDetails(bulbasaurId);
+    }
 
-        const newData = {};
-        for (let i = 0; i < responses.length; i++) {
-          const pokemon = await responses[i].json();
-          const pokemonName = pokemon.name;
-          const pokemonType = pokemon.types;
-          const pokemonImg = pokemon.sprites.front_default;
-          const speciesRes = await fetch(pokemon.species.url);
-          const speciesData = await speciesRes.json();
-          const pokemonDesc = speciesData.flavor_text_entries[9].flavor_text;
+    if (!selectedPokemon) {
+      dispatch(setSelectedPokemon(bulbasaurId));
+    }
+  }, [dispatch, pokedexData, selectedPokemon]);
 
-          newData[i + 1] = {
-            name: pokemonName,
-            img: pokemonImg,
-            types: pokemonType,
-            desc: pokemonDesc,
-          };
-        }
+  const fetchPokemonDetails = async (id) => {
+    try {
+      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+      const data = await response.json();
+      const speciesResponse = await fetch(data.species.url);
+      const speciesData = await speciesResponse.json();
 
-        dispatch(setPokedex(newData));
-        localStorage.setItem("pokedexData", JSON.stringify(newData));
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching Pokémon data:", error);
-        setIsLoading(false);
-      }
-    };
+      const details = {
+        name: data.name,
+        img: data.sprites.front_default,
+        types: data.types,
+        desc:
+          speciesData.flavor_text_entries.find(
+            (entry) => entry.language.name === "en"
+          )?.flavor_text || "No description available.",
+      };
 
-    fetchPokemon();
-  }, [dispatch]);
+      dispatch(setPokemonDetails(id, details));
+    } catch (error) {
+      console.error("Error fetching Pokémon details:", error);
+    }
+  };
 
-  // Define a new function to handle Pokémon clicks
   const handlePokemonClick = (id) => {
+    if (!pokedexData[id]) {
+      fetchPokemonDetails(id);
+    }
     dispatch(setSelectedPokemon(id));
   };
 
@@ -69,88 +63,77 @@ const Pokedex = () => {
       alert("Please enter a Pokémon name.");
       return;
     }
-    const lowercaseQuery = searchQuery.toLowerCase();
-    for (const id in pokedex) {
-      if (pokedex[id].name.toLowerCase() === lowercaseQuery) {
-        dispatch(setSelectedPokemon(id));
 
-        // Scroll to the selected Pokemon
-        const selectedPokemonElement = document.getElementById(id);
-        if (selectedPokemonElement) {
-          const container = document.getElementById("list");
-          container.scrollTop = selectedPokemonElement.offsetTop - 275;
-        }
-        return;
+    const match = pokemonList.find(
+      (pokemon) => pokemon.name.toLowerCase() === searchQuery.toLowerCase()
+    );
+
+    if (match) {
+      handlePokemonClick(match.id);
+      const element = document.getElementById(match.id);
+      if (element) {
+        const container = document.getElementById("list");
+        container.scrollTop = element.offsetTop - 275;
       }
+    } else {
+      alert("Pokémon not found.");
     }
-    alert("Pokemon not found.");
   };
 
   return (
     <div id="container">
-      {isLoading ? (
-        <>
-          <div id="loading-container">
-            <div className="pokeball"></div>
-            <h3>Loading...</h3>
-            <h3>(This may take a while to load)</h3>
-          </div>
-        </>
-      ) : (
-        <div id="container">
-          <div id="top-navigation">
-            <div id="header">
-              <h1 id="title">Susan's Pokedex</h1>
-              <h4>First 50 Pokemon</h4>
-              <p>More Pokemon to be added!</p>
-            </div>
-            <div id="search-box">
-              <input
-                type="text"
-                placeholder="Search Pokémon by name"
-                value={searchQuery}
-                id="input-form"
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleSearch();
-                  }
-                }}
-              />
-              <button id="search-button" onClick={handleSearch}>
-                Search
-              </button>
-            </div>
-          </div>
+      <div id="header">
+        <h1 id="title">Susan's Pokedex</h1>
+        <p>Generations I - IV</p>
+      </div>
+      <div id="search-box">
+        <input
+          type="text"
+          placeholder="Search Pokémon by name"
+          value={searchQuery}
+          id="input-form"
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSearch();
+            }
+          }}
+        />
+        <button id="search-button" onClick={handleSearch}>
+          Search
+        </button>
+      </div>
 
-          <div id="content">
-            <div id="list">
-              {Object.keys(pokedex).map((id) => (
-                <div
-                  key={id}
-                  id={id}
-                  className={`pokemon-name ${
-                    selectedPokemon === id ? "active" : ""
-                  }`}
-                  onClick={() => handlePokemonClick(id)}
-                >
-                  {`${id}. ${pokedex[id]?.name.toUpperCase()}`}
-                </div>
-              ))}
+      <div id="content">
+        <div id="list">
+          {pokemonList.map((pokemon) => (
+            <div
+              key={pokemon.id}
+              id={pokemon.id}
+              className={`pokemon-name ${
+                selectedPokemon === pokemon.id ? "active" : ""
+              }`}
+              onClick={() => handlePokemonClick(pokemon.id)}
+            >
+              {`${pokemon.id}. ${pokemon.name.toUpperCase()}`}
             </div>
-            <div id="info">
+          ))}
+        </div>
+        <div id="info">
+          {selectedPokemon && pokedexData[selectedPokemon] ? (
+            <>
               <div id="pokemon-box">
                 <img
                   id="pokemon-img"
-                  src={pokedex[selectedPokemon]?.img}
+                  src={pokedexData[selectedPokemon].img}
                   alt="Pokemon"
                 />
                 <div id="pokemon-innerbox">
                   <div id="pokemon-name">
-                    {pokedex[selectedPokemon]?.name.toUpperCase()}
+                    {pokedexData[selectedPokemon].name.toUpperCase()}
                   </div>
                   <div id="pokemon-types">
-                    {pokedex[selectedPokemon]?.types?.map((type, index) => (
+                    {pokedexData[selectedPokemon].types.map((type, index) => (
                       <span
                         key={index}
                         className={`type-box ${type.type.name}`}
@@ -162,12 +145,17 @@ const Pokedex = () => {
                 </div>
               </div>
               <div id="pokemon-description">
-                {pokedex[selectedPokemon]?.desc}
+                {pokedexData[selectedPokemon].desc}
               </div>
-            </div>
-          </div>
+            </>
+          ) : (
+            <>
+              <div id="pokemon-box"></div>
+              <div id="pokemon-description"></div>
+            </>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };

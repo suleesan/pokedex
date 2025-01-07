@@ -1,22 +1,33 @@
-import { createStore } from 'redux';
+import { configureStore } from "@reduxjs/toolkit";
+import { SET_POKEMON_DETAILS, SET_SELECTED_POKEMON } from "./actions";
 
-// Define initial state
 const initialState = {
-  pokedex: JSON.parse(localStorage.getItem('pokedexData')) || {}, // Initialize with data from local storage if available
+  pokedexData: JSON.parse(localStorage.getItem("pokedexData")) || {},
+  selectedPokemon: null,
 };
 
 const rootReducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'SET_POKEDEX':
-      return { ...state, pokedex: action.payload };
-    case 'SET_SELECTED_POKEMON':
-      return { ...state, selectedPokemon: action.payload }; // Update selectedPokemon
+    case SET_SELECTED_POKEMON:
+      return { ...state, selectedPokemon: action.payload };
+    case SET_POKEMON_DETAILS:
+      const updatedDetails = {
+        ...state.pokedexData,
+        [action.payload.id]: action.payload.details,
+      };
+      localStorage.setItem("pokedexData", JSON.stringify(updatedDetails));
+      return {
+        ...state,
+        pokedexData: updatedDetails,
+      };
+
     default:
       return state;
   }
 };
 
-// Create the Redux store
-const store = createStore(rootReducer);
+const store = configureStore({
+  reducer: rootReducer,
+});
 
 export default store;
